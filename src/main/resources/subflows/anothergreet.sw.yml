@@ -1,0 +1,22 @@
+id: anothergreetSubflow
+version: '1.0'
+name: Another Greeting workflow
+specVersion: 0.8.0
+description: YAML based greeting workflow
+expressionLang: jsonpath
+start: GreetPerson
+functions:
+  - name: greetFunction
+    type: custom
+    operation: sysout
+states:
+  - name: GreetPerson
+    type: operation
+    actions:
+      - name: greetAction
+        functionRef:
+          refName: greetFunction
+          arguments:
+            message: "Another Greeting $.greeting $.name"
+    end:
+      terminate: true

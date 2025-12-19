@@ -10,6 +10,12 @@ functions:
   - name: greetFunction
     type: custom
     operation: sysout
+events:
+  - name: quietEvent
+    source: ''
+    type: quiet
+    dataOnly: false
+
 states:
   - name: ChooseOnLanguage
     type: switch
@@ -24,11 +30,35 @@ states:
     type: inject
     data:
       greeting: 'Hello from YAML Workflow'
-    transition: GreetPerson
+    transition: ExecuteSubflow
   - name: GreetInSpanish
     type: inject
     data:
       greeting: 'Saludos desde YAML Workflow'
+    transition: ExecuteSubflow
+  - name: ExecuteSubflow
+    type: operation
+    actions:
+    - name: executeSubflow
+      subFlowRef: anothergreetSubflow
+      actionDataFilter:
+        useResults: false
+      sleep:
+        before: "PT5S"
+    transition: waitForEvent
+  - name: waitForEvent
+    type: event
+    onEvents:
+      - eventRefs:
+          - quietEvent
+        eventDataFilter:
+          data: .data
+        actions:
+          - name: printAfterEvent
+            functionRef:
+              refName: greetFunction
+              arguments:
+                message: '$[*]'
     transition: GreetPerson
   - name: GreetPerson
     type: operation
