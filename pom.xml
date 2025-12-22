@@ -65,7 +65,18 @@
             <artifactId>sonataflow-quarkus</artifactId>
             <version>${kogito.version}</version>
         </dependency>
-
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-agroal</artifactId>
+</dependency>
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-jdbc-postgresql</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
+</dependency>
 
 <!-- un-comment this extension, and comment the quarkus-opentelemetry, and no traces are produced at all -->
 <dependency>

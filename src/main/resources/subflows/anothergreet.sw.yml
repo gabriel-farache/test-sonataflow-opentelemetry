@@ -3,20 +3,47 @@ version: '1.0'
 name: Another Greeting workflow
 specVersion: 0.8.0
 description: YAML based greeting workflow
-expressionLang: jsonpath
-start: GreetPerson
+start: GreetPersonSubflow
 functions:
   - name: greetFunction
     type: custom
     operation: sysout
+events:
+  - name: loudEvent
+    source: ''
+    type: loud
+    dataOnly: false
 states:
-  - name: GreetPerson
+  - name: GreetPersonSubflow
     type: operation
     actions:
       - name: greetAction
         functionRef:
           refName: greetFunction
           arguments:
-            message: "Another Greeting $.greeting $.name"
+            message: '"Another Greeting " + .greeting + " " + .name'
+    transition: waitForEventSubflow
+  - name: waitForEventSubflow
+    type: event
+    onEvents:
+      - eventRefs:
+          - loudEvent
+        eventDataFilter:
+          data: .data
+        actions:
+          - name: printAfterEvent
+            functionRef:
+              refName: greetFunction
+              arguments:
+                message: '$[*]'
+    transition: GreetPersonAfterWaitSubflow
+  - name: GreetPersonAfterWaitSubflow
+    type: operation
+    actions:
+      - name: greetAction
+        functionRef:
+          refName: greetFunction
+          arguments:
+            message: '"After wait another Greeting " + .greeting + " " + .name'
     end:
       terminate: true
